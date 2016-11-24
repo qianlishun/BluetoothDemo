@@ -3,49 +3,52 @@ Bluetooth SDK(demo) for iOS
 
 * Use
 
-    * Creat Manager
+   * Creat Manager
 
-          /// Manager
-          bleManager = [BLEManager sharedInstance];
+             // Manager
+             bleManager = [BLEManager sharedInstance];
+             // 设置代理
+             [bleManager setDelegate:self];
 
-          // 设置代理
-          [bleManager setDelegate:self];
-        
-        
-        
-    * Start Scan
-    
-           // 开始扫描 设置过滤
-           [bleManager scanForDevice:0];
-    
-    * Stop Scan
 
-           [bleManager stopScan];
+   * Start Scan
+      
+             // 设置代理
+             [bleManager setDelegate:self];
 
-    * close all connect
+             // 开始扫描 设置过滤
+             [bleManager scanForDevice:0];
 
-           [bleManager  closeAllDevice];
+
+   * Stop Scan
    
-    * BLEDevice
-  
-            // 设置代理
-            [device setDelegate:self]; // 必须要给 device 设置代理
+             [bleManager stopScan];
 
-            // 连接设备
-            [device connect];
-            // 断开设备
-            [device disconncet];
-    
-    
+
+   * close all connect
+
+             [bleManager  closeAllDevice];
+
+
+   * BLEDevice
+
+              // 设置代理
+             [device setDelegate:self]; // 必须要给 device 设置代理
+
+             // 连接设备
+             [device connect];
+             // 断开设备
+             [device disconnect];
+
    * BLEManager Delegate
+
+            /// 获取周边设备
+            - (void)onDeviceFound:(NSArray *)deviceArray{ }
+            
+            /// 链接设备的回调
+            - (void)isConnected:(BOOL)isConnected withDevice:(BLEDevice *)device{ }
+            
+            /// 断开连接的回调
+            - (void)disconnected:(BLEDevice *)device{ }
+
     
-           获取周边设备 
-           -(void)onDeviceFound:(NSArray *)deviceArray{ }
-
-           链接设备的回调
-           -(void)isConnected:(BOOL)isConnected withDevice:(BLEDevice *)device{ }
-
-           断开连接的回调
-           -(void)disconnected:(BLEDevice *)device{ }
-  
-  
