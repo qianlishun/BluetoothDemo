@@ -33,22 +33,22 @@ Bluetooth SDK(demo) for iOS
    * BLEDevice
 
               // 设置代理
-             [device setDelegate:self]; // 必须要给 device 设置代理
+              [device setDelegate:self]; // 必须要给 device 设置代理
 
-             // 连接设备
-             [device connect];
-             // 断开设备
-             [device disconnect];
+              // 连接设备
+              [device connect];
+              // 断开设备
+              [device disconnect];
 
    * BLEManager Delegate
 
-            /// 获取周边设备
-            - (void)onDeviceFound:(NSArray *)deviceArray{ }
-            
-            /// 链接设备的回调
-            - (void)isConnected:(BOOL)isConnected withDevice:(BLEDevice *)device{ }
-            
-            /// 断开连接的回调
-            - (void)disconnected:(BLEDevice *)device{ }
+              /// 获取周边设备
+              - (void)onDeviceFound:(NSArray *)deviceArray{ }
+
+              /// 链接设备的回调
+              - (void)isConnected:(BOOL)isConnected withDevice:(BLEDevice *)device{ }
+
+              /// 断开连接的回调
+              - (void)disconnected:(BLEDevice *)device{ }
 
     
