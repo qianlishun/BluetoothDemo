@@ -5,12 +5,11 @@ Bluetooth SDK(demo) for iOS
 
     * Creat Manager
 
-          // Manager
+          /// Manager
           bleManager = [BLEManager sharedInstance];
-
           // 设置代理
           [bleManager setDelegate:self];
-    
+        
     * Start Scan
     
            // 开始扫描 设置过滤
@@ -38,8 +37,8 @@ Bluetooth SDK(demo) for iOS
 
     * BLEManager Delegate
     
-             获取周边设备 
-             -(void)onDeviceFound:(NSArray *)deviceArray{ }
+            获取周边设备 
+            -(void)onDeviceFound:(NSArray *)deviceArray{ }
   
             链接设备的回调
             -(void)isConnected:(BOOL)isConnected withDevice:(BLEDevice *)device{ }
