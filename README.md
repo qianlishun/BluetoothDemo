@@ -1,6 +1,13 @@
 # BluetoothDemo
 Bluetooth SDK(demo) for iOS 
 
+* Func
+  * Scan for peripheral
+  * List  of peripherals that have been found
+  * List services of peripheral
+  * Connect to peripheral
+
+
 * Use
 
    * Creat Manager
