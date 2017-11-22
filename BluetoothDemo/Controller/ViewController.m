@@ -97,7 +97,7 @@
 }
 
 
-#pragma mark - SonopTekBLEManager Delegate
+#pragma mark - BLEManager Delegate
 
 /// 获取周边设备
 - (void)onDeviceFound:(NSArray *)deviceArray{
@@ -139,7 +139,7 @@
     self.pigDepthTextF.text = @"";
 }
 
-#pragma mark - SonopTekBLEDevice Delegate
+#pragma mark - BLEDevice Delegate
 /// 获取设备信息
 - (void)getInfo:(NSString *)info withDevice:(BLEDevice *)device{
     self.deviceTextF.text = [NSString stringWithFormat:@"%@//%@",device.name,device.mac];
