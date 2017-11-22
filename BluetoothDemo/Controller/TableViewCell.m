@@ -88,7 +88,7 @@
 - (void)initWithRSSILabel
 {
     if (!_RSSILabel) {
-        _RSSILabel = [self customLabelWithFrame:CGRectMake(self.contentView.bounds.size.width-100, 5.0, 100.0, 30.0)];
+        _RSSILabel = [self customLabelWithFrame:CGRectMake(self.superview.frame.size.width-100, 5.0, 100.0, 30.0)];
         [_RSSILabel setTranslatesAutoresizingMaskIntoConstraints:NO];
     }
     if (_RSSILabel && _RSSILabel.superview != self.contentView) {
@@ -107,5 +107,11 @@
     return label;
 }
 
+- (void)layoutSubviews{
+    [super layoutSubviews];
+    [_nameLabel setFrame:CGRectMake(10.0, 5.0, 120.0, 20.0)];
+    [_serviceCountLabel setFrame:CGRectMake(10, 23.0, 100.0, 20.0)];
+    [_RSSILabel setFrame:CGRectMake(self.superview.frame.size.width-100, 5.0, 100.0, 30.0)];
+}
 
 @end
