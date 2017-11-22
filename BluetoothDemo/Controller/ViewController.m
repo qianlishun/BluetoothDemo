@@ -26,8 +26,8 @@
 
 @property (weak, nonatomic) IBOutlet UITextField *deviceTextF;
 @property (weak, nonatomic) IBOutlet UITextField *funcTextF;
-@property (weak, nonatomic) IBOutlet UITextField *pigIDTextF;
-@property (weak, nonatomic) IBOutlet UITextField *pigDepthTextF;
+@property (weak, nonatomic) IBOutlet UITextField *pIDTextF;
+@property (weak, nonatomic) IBOutlet UITextField *pDepthTextF;
 @property (weak, nonatomic) IBOutlet UITextField *peripheralName;
 
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *bottomConstraint;
@@ -87,8 +87,8 @@
     [bleManager  closeAllDevice];
     self.deviceTextF.text = @"";
     self.funcTextF.text  = @"";
-    self.pigIDTextF.text = @"";
-    self.pigDepthTextF.text = @"";
+    self.pIDTextF.text = @"";
+    self.pDepthTextF.text = @"";
     
     [SVProgressHUD showInfoWithStatus:@"关闭所有连接"];
     [bleManager stopScan];
@@ -119,8 +119,8 @@
 - (void)isConnected:(BOOL)isConnected withDevice:(BLEDevice *)device{
     if (isConnected) {
         [SVProgressHUD showSuccessWithStatus:[NSString stringWithFormat:@"%@连接成功",device.name]];
-        self.pigDepthTextF.text = @"";
-        self.pigIDTextF.text = @"";
+        self.pDepthTextF.text = @"";
+        self.pIDTextF.text = @"";
         
         self.connectedList.text = self.ConnectedlistStr;
     }else{
@@ -135,8 +135,8 @@
     
     self.deviceTextF.text = @"";
     self.funcTextF.text  = @"";
-    self.pigIDTextF.text = @"";
-    self.pigDepthTextF.text = @"";
+    self.pIDTextF.text = @"";
+    self.pDepthTextF.text = @"";
 }
 
 #pragma mark - BLEDevice Delegate
