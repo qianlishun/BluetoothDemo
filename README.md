@@ -1,6 +1,10 @@
 # BluetoothDemo
 Bluetooth SDK(demo) for iOS 
 
+* 这个 demo 的结构其实是有问题的，当时是为了需求写成这种结构。
+* 其实所有的事情都应该由 manager 去做，对于这个库的结构来说就是把 Driver 和 Device 的方法都合到 manager 中去，
+* driver 这个类可以删除掉，device只负责用来表述 peripheral。
+
 * Func
   * Scan for peripheral
   * List  of peripherals that have been found
