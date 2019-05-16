@@ -1,9 +1,8 @@
 //
 //  TableViewCell.m
-//  BLEDemo
 //
 //  Created by mrq on 16/9/20.
-//  Copyright © 2016年 MrQ. All rights reserved.
+//  Copyright © 2016年 Sonoptek. All rights reserved.
 //
 
 
@@ -33,17 +32,21 @@
 #pragma mark - Public Method
 - (void)setDevice:(BLEDevice *)device
 {
+    _nameLabel.text = _serviceCountLabel.text = _RSSILabel.text = @"";
     if (device) {
         [_nameLabel setText:device.name];
         [_serviceCountLabel setText:[NSString stringWithFormat:@" %@ 个services",device.serviceCount]];
         [_RSSILabel setText:[NSString stringWithFormat:@"RSSI:%@",device.RSSI]];
     }
 }
-
+- (void)prepareForReuse{
+    [super prepareForReuse];
+    [self customUI];
+}
 - (void)awakeFromNib {
     // Initialization code
     [super awakeFromNib];
-    [self customUI];
+    
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
@@ -59,13 +62,13 @@
     [self initWithServiceLabel];
     [self initWithRSSILabel];
     
+    [self layoutSubviews];
 }
 
 - (void)initWithNameLabel
 {
     if (!_nameLabel) {
         _nameLabel = [self customLabelWithFrame:CGRectMake(10.0, 5.0, 100.0, 20.0)];
-//         [_nameLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
     }
     if (_nameLabel && _nameLabel.superview != self.contentView) {
         [self.contentView addSubview:_nameLabel];
@@ -75,7 +78,6 @@
 - (void)initWithServiceLabel{
     if (!_serviceCountLabel) {
         _serviceCountLabel = [self customLabelWithFrame:CGRectMake(10, 23.0, 100.0, 20.0)];
-//         [_serviceCountLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
     }
     
     if (_serviceCountLabel && _serviceCountLabel.superview != self.contentView) {
@@ -88,8 +90,7 @@
 - (void)initWithRSSILabel
 {
     if (!_RSSILabel) {
-        _RSSILabel = [self customLabelWithFrame:CGRectMake(self.superview.frame.size.width-100, 5.0, 100.0, 30.0)];
-//         [_RSSILabel setTranslatesAutoresizingMaskIntoConstraints:NO];
+        _RSSILabel = [self customLabelWithFrame:CGRectMake(self.contentView.bounds.size.width-100, 5.0, 100.0, 30.0)];
     }
     if (_RSSILabel && _RSSILabel.superview != self.contentView) {
         [self.contentView addSubview:_RSSILabel];
@@ -107,11 +108,12 @@
     return label;
 }
 
-- (void)layoutSubviews{
+-(void)layoutSubviews{
     [super layoutSubviews];
-    [_nameLabel setFrame:CGRectMake(10.0, 5.0, 120.0, 20.0)];
+    
+    [_nameLabel setFrame:CGRectMake(10.0, 5.0, 100.0, 20.0)];
     [_serviceCountLabel setFrame:CGRectMake(10, 23.0, 100.0, 20.0)];
-    [_RSSILabel setFrame:CGRectMake(self.superview.frame.size.width-100, 5.0, 100.0, 30.0)];
+    [_RSSILabel setFrame:CGRectMake(self.contentView.bounds.size.width-100, 5.0, 100.0, 30.0)];
 }
 
 @end
