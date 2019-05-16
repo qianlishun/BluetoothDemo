@@ -102,11 +102,11 @@
     if([_observers containsObject:observer]){
         return;
     }
-    //    if (self.BLEAvailable == BLE_STATE_ON) {
-    if ([observer respondsToSelector:@selector(onManagerBLEAvailable:)]) {
-        [observer onManagerBLEAvailable:self.BLEAvailable];
+    if (self.BLEAvailable == BLE_STATE_ON) {
+        if ([observer respondsToSelector:@selector(onManagerBLEAvailable:)]) {
+            [observer onManagerBLEAvailable:self.BLEAvailable];
+        }
     }
-    //    }
     [_observers addObject:observer];
 }
 
