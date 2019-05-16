@@ -65,7 +65,7 @@
 {
     if (!_nameLabel) {
         _nameLabel = [self customLabelWithFrame:CGRectMake(10.0, 5.0, 100.0, 20.0)];
-        [_nameLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
+//         [_nameLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
     }
     if (_nameLabel && _nameLabel.superview != self.contentView) {
         [self.contentView addSubview:_nameLabel];
@@ -75,7 +75,7 @@
 - (void)initWithServiceLabel{
     if (!_serviceCountLabel) {
         _serviceCountLabel = [self customLabelWithFrame:CGRectMake(10, 23.0, 100.0, 20.0)];
-        [_serviceCountLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
+//         [_serviceCountLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
     }
     
     if (_serviceCountLabel && _serviceCountLabel.superview != self.contentView) {
@@ -89,7 +89,7 @@
 {
     if (!_RSSILabel) {
         _RSSILabel = [self customLabelWithFrame:CGRectMake(self.superview.frame.size.width-100, 5.0, 100.0, 30.0)];
-        [_RSSILabel setTranslatesAutoresizingMaskIntoConstraints:NO];
+//         [_RSSILabel setTranslatesAutoresizingMaskIntoConstraints:NO];
     }
     if (_RSSILabel && _RSSILabel.superview != self.contentView) {
         [self.contentView addSubview:_RSSILabel];
