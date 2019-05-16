@@ -7,23 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
-@class BLEDevice;
-
-@protocol BLEDeviceDelegate <NSObject>
-
-
-- (void)getInfo:(NSString*)info withDevice:(BLEDevice *)device;
-
-
-@end
 
 @interface BLEDevice : NSObject
-
-- (void)connect;
-
-- (void)disconncet;
-
-- (void)setDelegate:(id)delegate;
 
 /// 设备名称
 @property (nonatomic,copy) NSString *name;
@@ -36,6 +21,11 @@
 /// 设备服务数量
 @property (nonatomic,copy) NSString *serviceCount;
 
+@property (nonatomic,copy) NSString *info;
 
+/// 连接状态
+@property (nonatomic,assign) BOOL isConnected;
+
+@property (nonatomic,strong,readonly) id peripheral;
 - (instancetype)initWithPeriphral:(id)thePeripheal;
 @end

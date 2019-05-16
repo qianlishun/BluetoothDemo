@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-
+#import "BLEDevice.h"
 
 /// 设备过滤选择
 #define TEST_1       0x0001
@@ -15,40 +15,63 @@
 #define TEST_3       0x0004
 
 ///扫描时间
-#define ScanTimeInterval 4.0
+#define ScanTimeInterval 3.0
 
-@class  BLEDevice;
+typedef enum : NSUInteger {
+    BLE_STATE_UNKNOWN = -1,
+    BLE_STATE_OFF = 0,
+    BLE_STATE_ON = 1,
+}BLEAvailableState;
+
 @protocol BLEManagerDelegate <NSObject>
 
-// 获取周边设备
-- (void)onDeviceFound:(NSArray *)deviceArray;
-
-// @brief 连接设备的回调.
-- (void)isConnected:(BOOL)isConnected withDevice:(BLEDevice *)device;
-
-//brief 连接断开的回调.
-
-- (void)disconnected:(BLEDevice *)device;
-
+/// 蓝牙开启状态 (BLE_STATE_ON 为开启)
+- (void)onManagerBLEAvailable: (BLEAvailableState)state;
+/**
+ * @brief 获取周边设备.
+ * @param deviceArray 设备数组.(BlueDevice类型)
+ */
+- (void)onManagerDevicesFound:(NSArray*)deviceArray;
+/**
+ * @brief 连接设备成功.
+ * @param device 对应设备
+ */
+- (void)onManagerDeviceConnected:(BLEDevice*)device;
+/**
+ * @brief 连接设备失败.
+ * @param device 对应设备
+ */
+- (void)onManagerDeviceConnectFailed: (BLEDevice*)device;
+/**
+ * @brief 连接设备断开.
+ * @param device 对应设备
+ */
+- (void)onManagerDeviceDisconnected: (BLEDevice*)device;
 @end
 
 @interface BLEManager : NSObject
 
-/// 蓝牙开启状态 (YES 为开启)
-@property (nonatomic,assign)   BOOL isBLEPoweredOn;
-
-/// 已连接设备
-@property (nonatomic,assign)  NSArray *connectedDevices;
-
 + (instancetype)sharedInstance;
+/// 注册观察者
+- (void)registeObserver: (id)observer;
+/// 注销观察者
+- (void)deregisteObserver: (id)observer;
+/// 开始扫描设备 并设置过滤(想扫描什么设备就填哪个,格式如 TEST1|TEST2 ，0代表不过滤)
+- (void)scanForDevice: (unsigned short)filter;
+/// 取消扫描
+- (void)cancelScan;
+/// 连接某设备
+- (void)connectDevice: (BLEDevice*)device;
+/// 断开某已连接设备的连接
+- (void)disconnectDevice: (BLEDevice*)device;
+/// 断开所有已连接的设备
+- (void)disconnectAllDevices;
 
-- (void)setDelegate:(id)delegate;
+/// 已连接设备列表
+- (NSArray *)connectedDeviceList;
 
-/// 开始扫描设备 并设置过滤(想扫描什么设备就选择哪个,0代表不过滤)
-- (void)scanForDevice:(unsigned short)filter;
+/// 重置(清空所有设备列表)
+- (void)resetDeviceList;
 
-- (void)stopScan;
-
-- (void)closeAllDevice;
-
+- (BLEAvailableState)BLEAvailable;
 @end

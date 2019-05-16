@@ -11,9 +11,8 @@
 #import "TableViewCell.h"
 
 #import "BLEManager.h"
-#import "BLEDevice.h"
 
-@interface ViewController ()<BLEManagerDelegate,BLEDeviceDelegate,UITableViewDataSource,UITableViewDelegate>
+@interface ViewController ()<BLEManagerDelegate,UITableViewDataSource,UITableViewDelegate>
 {
     BLEManager *bleManager;
 }
@@ -26,8 +25,6 @@
 
 @property (weak, nonatomic) IBOutlet UITextField *deviceTextF;
 @property (weak, nonatomic) IBOutlet UITextField *funcTextF;
-@property (weak, nonatomic) IBOutlet UITextField *pIDTextF;
-@property (weak, nonatomic) IBOutlet UITextField *pDepthTextF;
 @property (weak, nonatomic) IBOutlet UITextField *peripheralName;
 
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *bottomConstraint;
@@ -36,6 +33,9 @@
 
 // 已连接设备
 @property (nonatomic,copy) NSMutableString *ConnectedlistStr;
+
+@property (nonatomic,strong) NSArray *connectedArray;
+@property (nonatomic,strong) NSArray *disconnectedArray;
 
 @end
 
@@ -52,55 +52,62 @@
     
     /// Manager
     bleManager = [BLEManager sharedInstance];
-    // 设置代理
-    [bleManager setDelegate:self];
+    // 设置观察者
+    [bleManager registeObserver:self];
     
     self.ListPeripheral = [NSArray array];
     
     self.tableView.tableHeaderView = self.headTitle;
     self.headTitle.text = @"请开始搜索设备...";
+    
+    _connectedArray = [NSArray array];
+    _disconnectedArray = [NSArray array];
 }
 
 // 搜索按钮点击事件
 - (void)startScanPeripherals{
-    
-    if (!bleManager.isBLEPoweredOn) {
-        [SVProgressHUD showInfoWithStatus:@"请打开蓝牙"];
-        self.headTitle.text = @"请确认已经打开蓝牙";
+    [self scanDevice];
+}
+
+- (void)scanDevice{
+    if (![bleManager BLEAvailable]) {
+        NSLog(@"蓝牙未打开");
         return;
     }
-    
-    // 设置代理
-    [bleManager setDelegate:self];
-    
     // 开始扫描 设置过滤
     [bleManager scanForDevice:0];
     
-    [SVProgressHUD showInfoWithStatus:@"扫描设备"];
+    NSLog(@"scan state %lu ",(unsigned long)bleManager.BLEAvailable);
     
+    NSLog(@"conneted device %lu",(unsigned long)bleManager.connectedDeviceList.count);
 }
 
 // 断开连接点击事件
 - (void)closeAllConnect{
     
     /// 关闭所有链接
-    [bleManager  closeAllDevice];
+    [bleManager disconnectAllDevices];
     self.deviceTextF.text = @"";
     self.funcTextF.text  = @"";
-    self.pIDTextF.text = @"";
-    self.pDepthTextF.text = @"";
     
     [SVProgressHUD showInfoWithStatus:@"关闭所有连接"];
-    [bleManager stopScan];
+    [bleManager cancelScan];
     
     self.connectedList.text = @"已连接设备:";
 }
 
 
 #pragma mark - BLEManager Delegate
-
+- (void)onManagerBLEAvailable:(BLEAvailableState)state{
+    NSLog(@"state %lu",(unsigned long)state);
+    if (state == BLE_STATE_ON) {
+        [bleManager scanForDevice:0];
+    }else{
+        [SVProgressHUD showInfoWithStatus:@"蓝牙未打开或不支持"];
+    }
+}
 /// 获取周边设备
-- (void)onDeviceFound:(NSArray *)deviceArray{
+- (void)onManagerDevicesFound:(NSArray *)deviceArray{
     
     if (deviceArray.count) {
         self.headTitle.text = @"选择要连接的设备";
@@ -116,34 +123,25 @@
 }
 
 /// 链接设备的回调
-- (void)isConnected:(BOOL)isConnected withDevice:(BLEDevice *)device{
-    if (isConnected) {
-        [SVProgressHUD showSuccessWithStatus:[NSString stringWithFormat:@"%@连接成功",device.name]];
-        self.pDepthTextF.text = @"";
-        self.pIDTextF.text = @"";
-        
-        self.connectedList.text = self.ConnectedlistStr;
-    }else{
-        [SVProgressHUD showErrorWithStatus:[NSString stringWithFormat:@"%@连接失败",device.name]];
-    }
+- (void)onManagerDeviceConnected:(BLEDevice *)device{
+    [SVProgressHUD showSuccessWithStatus:[NSString stringWithFormat:@"%@连接成功",device.name]];
+    self.deviceTextF.text = [NSString stringWithFormat:@"%@//%@",device.name,device.mac];
+    self.funcTextF.text = device.info;
+    self.connectedList.text = self.ConnectedlistStr;
+}
+
+- (void)onManagerDeviceConnectFailed:(BLEDevice *)device{
+    [SVProgressHUD showErrorWithStatus:[NSString stringWithFormat:@"%@连接失败",device.name]];
+
 }
 
 /// 断开连接的回调
-- (void)disconnected:(BLEDevice *)device{
+-(void)onManagerDeviceDisconnected:(BLEDevice *)device{
     [SVProgressHUD showInfoWithStatus:[NSString stringWithFormat:@"%@断开连接",device.name]];
     self.connectedList.text = self.ConnectedlistStr;
     
     self.deviceTextF.text = @"";
     self.funcTextF.text  = @"";
-    self.pIDTextF.text = @"";
-    self.pDepthTextF.text = @"";
-}
-
-#pragma mark - BLEDevice Delegate
-/// 获取设备信息
-- (void)getInfo:(NSString *)info withDevice:(BLEDevice *)device{
-    self.deviceTextF.text = [NSString stringWithFormat:@"%@//%@",device.name,device.mac];
-    self.funcTextF.text = info;
 }
 
 #pragma mark - tableView dataSource &&  Delegate
@@ -180,12 +178,8 @@
     /// 获取设备
     BLEDevice *device = [self.ListPeripheral objectAtIndex:indexPath.row];
     
-    /// 设置代理
-    [device setDelegate:self]; // 必须要给 device 设置代理
-    
-    // 连接设备
-    [device connect];
-    
+    [bleManager connectDevice:device];
+
 }
 
 #pragma mark - 懒加载
@@ -194,7 +188,7 @@
     
     _ConnectedlistStr = [NSMutableString stringWithFormat:@"已连接设备: "];
     
-    for (BLEDevice *device in bleManager.connectedDevices) {
+    for (BLEDevice *device in bleManager.connectedDeviceList) {
         [_ConnectedlistStr appendString:device.name];
         [_ConnectedlistStr appendString:@"/"];
     }
