@@ -74,8 +74,15 @@
         
         //        dispatch_queue_t queue = dispatch_get_main_queue();
         
-  
-        theCntrMgr = [[CBCentralManager alloc]initWithDelegate:self queue:nil];
+        NSArray *backgroundModes = [[[NSBundle mainBundle] infoDictionary]objectForKey:@"UIBackgroundModes"];
+        if ([backgroundModes containsObject:@"bluetooth-central"]) {
+            //后台模式
+            theCntrMgr =  [[CBCentralManager alloc] initWithDelegate:self queue:nil options:options];
+        }
+        else {
+            //非后台模式
+            theCntrMgr = [[CBCentralManager alloc]initWithDelegate:self queue:nil];
+        }
         
         //        [self scanForDevice:0];
         
