@@ -364,6 +364,14 @@
 
     [self readBasicChars:peripheral];
     
+     //  set Notify for UUID 
+     // 这里是注册 character 的通知消息，要监听哪个服务的消息，就填这个服务的UUID
+     // 对应的消息会在下面 didUpdateValueForCharacteristic 里得到
+    CBCharacteristic* character = [self GetCharacteristic:UUID withPeripheral:peripheral];
+    if (character) {
+        [peripheral setNotifyValue:YES forCharacteristic: character];
+    }
+    
 }
 
 - (void)peripheral:(CBPeripheral *)peripheral didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error{
