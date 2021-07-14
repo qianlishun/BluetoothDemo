@@ -186,6 +186,29 @@
     }
 }
 
+- (void)sendMsg:(NSString *)msg device:(BLEDevice *)device response:(BOOL)response{
+
+    // 这里的编码看协议怎么定的，这里用defaultCStringEncoding
+    NSData *data = [msg dataUsingEncoding:[NSString defaultCStringEncoding]];
+    
+    // 这里的 UUID 是蓝牙设备那段用来接收手机端数据所对应的端口
+    [self sendData:data device:device UUID:TEST_CHAR_UUID response:response];
+}
+
+- (void)sendData:(NSData *)data device:(BLEDevice *)device UUID:(NSString *)UUID response:(BOOL)response{
+    
+    // 根据对应的 UUID 去得到对应 characteristic
+    CBCharacteristic* characteristic = [self GetCharacteristic:UUID withPeripheral:device.peripheral];
+    
+    if(characteristic){
+        // 给蓝牙设备发送数据
+        if(response){
+            [device.peripheral writeValue:data forCharacteristic:characteristic type:CBCharacteristicWriteWithResponse];
+        }else{
+            [device.peripheral writeValue:data forCharacteristic:characteristic type:CBCharacteristicWriteWithoutResponse];
+        }
+    }
+}
 
 - (BLEAvailableState)BLEAvailable{
     switch (theCntrMgr.state) {
@@ -402,14 +425,20 @@
         
     }else if([characteristic.UUID isEqual:[CBUUID UUIDWithString:TEST_CHAR_UUID]]) {
         
+        BLEDevice *device = [self getDeviceWithPeripheral:peripheral];
+
         NSData *data = characteristic.value;
         
         // 这里得到的data是蓝牙设备端传过来的数据，具体怎么解析看协议怎么定的
         // 一般情况下是用NSASCIIStringEncoding解析成字符串
         NSString *value = [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
 
-        NSLog(@"recv data:  %@", value);
-        
+        id obs;
+        for (obs in _observers) {
+            if ([obs respondsToSelector:@selector(onReceivedMsg:withDevice:)]) {
+                [obs onReceivedMsg:value withDevice:device];
+            }
+        }
     }
 }
 
@@ -471,7 +500,7 @@
         unsigned char ucFunc = [self basicFunc];
         
         NSMutableString* func = [[NSMutableString alloc]init];
-        if (ucFunc & 0x01) {    //  EarTag Reader Featured.
+        if (ucFunc & 0x01) {
             
             [func appendFormat:@"FF17"];
             [self doRead:@"FF17" with:periphearl];

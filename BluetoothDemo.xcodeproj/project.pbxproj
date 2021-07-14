@@ -76,7 +76,10 @@
 			isa = PBXGroup;
 			children = (
 				6EBFED861DE6D7EC008018F1 /* Lib */,
-				6EBFED991DE6D7FA008018F1 /* Controller */,
+				6EBFED9A1DE6D7FA008018F1 /* TableViewCell.h */,
+				6EBFED9B1DE6D7FA008018F1 /* TableViewCell.m */,
+				6EBFED9C1DE6D7FA008018F1 /* ViewController.h */,
+				6EBFED9D1DE6D7FA008018F1 /* ViewController.m */,
 				6EBFED721DE6D7B6008018F1 /* AppDelegate.h */,
 				6EBFED731DE6D7B6008018F1 /* AppDelegate.m */,
 				6EBFED781DE6D7B6008018F1 /* Main.storyboard */,
@@ -118,17 +121,6 @@
 				6EBFED921DE6D7EC008018F1 /* SVProgressHUD.m */,
 			);
 			path = SVProgressHUD;
-			sourceTree = "<group>";
-		};
-		6EBFED991DE6D7FA008018F1 /* Controller */ = {
-			isa = PBXGroup;
-			children = (
-				6EBFED9A1DE6D7FA008018F1 /* TableViewCell.h */,
-				6EBFED9B1DE6D7FA008018F1 /* TableViewCell.m */,
-				6EBFED9C1DE6D7FA008018F1 /* ViewController.h */,
-				6EBFED9D1DE6D7FA008018F1 /* ViewController.m */,
-			);
-			path = Controller;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

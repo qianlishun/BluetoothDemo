@@ -24,8 +24,10 @@
 
 
 @property (weak, nonatomic) IBOutlet UITextField *deviceTextF;
-@property (weak, nonatomic) IBOutlet UITextField *funcTextF;
-@property (weak, nonatomic) IBOutlet UITextField *peripheralName;
+
+@property (weak, nonatomic) IBOutlet UITextView *recvText;
+
+@property (weak, nonatomic) IBOutlet UITextField *sendText;
 
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *bottomConstraint;
 
@@ -88,12 +90,23 @@
     /// 关闭所有链接
     [bleManager disconnectAllDevices];
     self.deviceTextF.text = @"";
-    self.funcTextF.text  = @"";
     
     [SVProgressHUD showInfoWithStatus:@"关闭所有连接"];
     [bleManager cancelScan];
     
     self.connectedList.text = @"已连接设备:";
+}
+
+- (IBAction)sendMsg:(id)sender {
+    if(bleManager.connectedDeviceList.count>0){
+        BLEDevice *device = bleManager.connectedDeviceList.firstObject;
+        [bleManager sendMsg:self.sendText.text device:device response:YES];
+        
+//        NSString *UUID = @"FFEE";
+//        NSData *data = [self.sendText.text dataUsingEncoding:[NSString defaultCStringEncoding]];
+//        [bleManager sendData:data device:device UUID:UUID response:YES];
+        
+    }
 }
 
 
@@ -126,7 +139,6 @@
 - (void)onManagerDeviceConnected:(BLEDevice *)device{
     [SVProgressHUD showSuccessWithStatus:[NSString stringWithFormat:@"%@连接成功",device.name]];
     self.deviceTextF.text = [NSString stringWithFormat:@"%@//%@",device.name,device.mac];
-    self.funcTextF.text = device.info;
     self.connectedList.text = self.ConnectedlistStr;
 }
 
@@ -141,7 +153,11 @@
     self.connectedList.text = self.ConnectedlistStr;
     
     self.deviceTextF.text = @"";
-    self.funcTextF.text  = @"";
+}
+
+- (void)onReceivedMsg:(NSString *)msg withDevice:(BLEDevice *)device{
+    NSLog(@"recv %@", msg);
+    self.recvText.text = [self.recvText.text stringByAppendingFormat:@"%@\n",msg];
 }
 
 #pragma mark - tableView dataSource &&  Delegate

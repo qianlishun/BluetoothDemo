@@ -47,6 +47,15 @@ typedef enum : NSUInteger {
  * @param device 对应设备
  */
 - (void)onManagerDeviceDisconnected: (BLEDevice*)device;
+
+
+/**
+ * @brief 接收蓝牙端数据.
+ * @param msg 接收到的数据
+ * @param device 对应设备
+ */
+- (void)onReceivedMsg:(NSString*)msg withDevice:(BLEDevice*)device;
+
 @end
 
 @interface BLEManager : NSObject
@@ -74,4 +83,12 @@ typedef enum : NSUInteger {
 - (void)resetDeviceList;
 
 - (BLEAvailableState)BLEAvailable;
+
+
+/// 发送消息到蓝牙端
+- (void)sendMsg:(NSString*)msg device:(BLEDevice*)device response:(BOOL)response;
+
+
+- (void)sendData:(NSData *)data device:(BLEDevice*)device UUID:(NSString*)UUID response:(BOOL)response;
+
 @end
