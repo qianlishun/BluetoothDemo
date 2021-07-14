@@ -11,6 +11,7 @@
 #define BASIC_CHAR_SN_UUID      @"FF13"
 #define BASIC_CHAR_SN_CONF_UUID @"FF14"
 
+#define TEST_CHAR_UUID @"FF1E"
 
 #import "BLEManager.h"
 
@@ -364,10 +365,10 @@
 
     [self readBasicChars:peripheral];
     
-     //  set Notify for UUID 
+     //  set Notify for UUID
      // 这里是注册 character 的通知消息，要监听哪个服务的消息，就填这个服务的UUID
      // 对应的消息会在下面 didUpdateValueForCharacteristic 里得到
-    CBCharacteristic* character = [self GetCharacteristic:UUID withPeripheral:peripheral];
+    CBCharacteristic* character = [self GetCharacteristic:TEST_CHAR_UUID withPeripheral:peripheral];
     if (character) {
         [peripheral setNotifyValue:YES forCharacteristic: character];
     }
@@ -398,6 +399,17 @@
         m_BasicSN = [[NSString alloc] initWithFormat:@"%s",psn];
         
         [self didBLERead:BASIC_CHAR_SN_UUID withPeripheral:peripheral];
+        
+    }else if([characteristic.UUID isEqual:[CBUUID UUIDWithString:TEST_CHAR_UUID]]) {
+        
+        NSData *data = characteristic.value;
+        
+        // 这里得到的data是蓝牙设备端传过来的数据，具体怎么解析看协议怎么定的
+        // 一般情况下是用NSASCIIStringEncoding解析成字符串
+        NSString *value = [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
+
+        NSLog(@"recv data:  %@", value);
+        
     }
 }
 
